@@ -20,8 +20,7 @@ def _deferred_install():
     _auto_install("pillow", "PIL")
     _auto_install("pdfplumber")
     _auto_install("scikit-learn", "sklearn")
-if not getattr(sys, 'frozen', False):
-    threading.Thread(target=_deferred_install, daemon=True).start()
+threading.Thread(target=_deferred_install, daemon=True).start()
 
 # Import ZEUS Engine
 try:
@@ -243,373 +242,53 @@ def parse_accounts_file(filepath):
 
 # ── Style ───────────────────────────────────────────────────────────────────
 STYLE = """
-/* ── BASE ── */
-QMainWindow, QDialog, QWidget {
-    background: #0b0b14;
-    color: #e2e8f0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 13px;
-}
-QScrollArea { background: transparent; border: none; }
-QScrollBar:vertical {
-    background: #13131f; width: 8px; border-radius: 4px; margin: 0;
-}
-QScrollBar::handle:vertical {
-    background: #2d2d4e; border-radius: 4px; min-height: 24px;
-}
-QScrollBar::handle:vertical:hover { background: #4f46e5; }
+* { font-family: 'Helvetica Neue', Arial, sans-serif; }
+QMainWindow, QDialog, QWidget { background: #141414; color: #e5e5e5; }
+#sidebar { background: #000000; border-right: 1px solid #2a2a2a; }
+#sidebar QPushButton { background: transparent; color: #a3a3a3; border: none; text-align: left; padding: 14px 20px; font-size: 13px; border-radius: 0; font-weight: 500; }
+#sidebar QPushButton:hover { background: #1a1a1a; color: #ffffff; }
+#sidebar QPushButton:checked { background: #e50914; color: #ffffff; border-left: 3px solid #ff0a16; font-weight: 700; }
+#topbar { background: #000000; border-bottom: 1px solid #2a2a2a; min-height: 52px; }
+#search_box { background: #2a2a2a; border: 1px solid #404040; color: #e5e5e5; border-radius: 4px; padding: 8px 14px; font-size: 13px; min-width: 260px; }
+#search_box:focus { border-color: #e50914; }
+QPushButton#btn_red { background: #e50914; color: #fff; border: none; border-radius: 4px; padding: 9px 20px; font-size: 13px; font-weight: 700; }
+QPushButton#btn_red:hover { background: #f40612; }
+QPushButton#btn_ghost { background: rgba(109,109,110,0.7); color: #fff; border: none; border-radius: 4px; padding: 9px 20px; font-size: 13px; font-weight: 600; }
+QPushButton#btn_ghost:hover { background: rgba(109,109,110,0.9); }
+QPushButton#btn_icon { background: transparent; color: #e5e5e5; border: 1px solid #595959; border-radius: 50%; min-width: 30px; max-width: 30px; min-height: 30px; max-height: 30px; font-size: 13px; }
+QPushButton#btn_icon:hover { border-color: #e5e5e5; background: rgba(255,255,255,0.1); }
+QPushButton#btn_green { background: #2ecc40; color: #000; border: none; border-radius: 4px; padding: 9px 20px; font-size: 13px; font-weight: 700; }
+QPushButton#btn_green:hover { background: #27ae60; }
+QTableWidget { background: #141414; gridline-color: #1f1f1f; color: #e5e5e5; border: none; selection-background-color: #2a2a2a; font-size: 13px; }
+QTableWidget::item { padding: 10px 8px; border-bottom: 1px solid #1f1f1f; }
+QTableWidget::item:selected { background: #2a2a2a; color: #fff; border-left: 2px solid #e50914; }
+QHeaderView::section { background: #000; color: #a3a3a3; padding: 10px 8px; border: none; border-bottom: 2px solid #2a2a2a; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+QLineEdit, QTextEdit, QComboBox, QSpinBox { background: #2a2a2a; color: #e5e5e5; border: 1px solid #404040; border-radius: 4px; padding: 8px 12px; font-size: 13px; }
+QLineEdit:focus, QTextEdit:focus { border-color: #e50914; }
+QComboBox::drop-down { border: none; }
+QComboBox QAbstractItemView { background: #2a2a2a; color: #e5e5e5; border: 1px solid #404040; }
+QTabWidget::pane { border: none; background: #141414; }
+QTabBar::tab { background: transparent; color: #a3a3a3; padding: 14px 20px; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; }
+QTabBar::tab:selected { color: #fff; border-bottom: 2px solid #e50914; }
+QGroupBox { border: 1px solid #2a2a2a; border-radius: 6px; margin-top: 14px; padding-top: 14px; color: #a3a3a3; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 6px; color: #a3a3a3; }
+QScrollBar:vertical { background: #141414; width: 6px; border: none; }
+QScrollBar::handle:vertical { background: #404040; border-radius: 3px; min-height: 30px; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
-QScrollBar:horizontal {
-    background: #13131f; height: 8px; border-radius: 4px; margin: 0;
-}
-QScrollBar::handle:horizontal {
-    background: #2d2d4e; border-radius: 4px; min-width: 24px;
-}
-QScrollBar::handle:horizontal:hover { background: #4f46e5; }
-QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
-
-/* ── SIDEBAR ── */
-#sidebar {
-    background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #13131f, stop:1 #0f0f1a);
-    border-right: 1px solid #1e1e30;
-}
-#sidebar QPushButton {
-    background: transparent;
-    color: #64748b;
-    border: none;
-    border-left: 3px solid transparent;
-    text-align: left;
-    padding: 12px 20px 12px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-#sidebar QPushButton:hover {
-    background: rgba(79,70,229,0.10);
-    color: #c7d2fe;
-    border-left: 3px solid #4f46e5;
-}
-#sidebar QPushButton:checked {
-    background: rgba(79,70,229,0.18);
-    color: #a5b4fc;
-    border-left: 3px solid #4f46e5;
-    font-weight: 700;
-}
-
-/* ── TOPBAR ── */
-#topbar {
-    background: #0f0f1a;
-    border-bottom: 1px solid #1e1e30;
-}
-
-/* ── INPUTS ── */
-QLineEdit, QTextEdit, QPlainTextEdit {
-    background: #13131f;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: #e2e8f0;
-    selection-background-color: #4f46e5;
-    font-size: 13px;
-}
-QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
-    border: 1px solid #4f46e5;
-    background: #16162a;
-}
-QLineEdit:disabled, QTextEdit:disabled {
-    background: #0d0d18;
-    color: #334155;
-    border-color: #1a1a2e;
-}
-#search_box {
-    background: #13131f;
-    border: 1px solid #252540;
-    border-radius: 20px;
-    padding: 8px 18px;
-    min-width: 240px;
-    font-size: 12px;
-    color: #94a3b8;
-}
-#search_box:focus {
-    border-color: #4f46e5;
-    background: #16162a;
-    color: #e2e8f0;
-}
-
-/* ── BUTTONS ── */
-QPushButton {
-    background: #1e1e30;
-    color: #94a3b8;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-}
-QPushButton:hover {
-    background: #252540;
-    color: #e2e8f0;
-    border-color: #4f46e5;
-}
-QPushButton:pressed { background: #1a1a2e; }
-QPushButton:disabled { color: #334155; border-color: #1a1a2e; background: #0d0d18; }
-
-#btn_red {
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 12px;
-    padding: 9px 20px;
-}
-#btn_red:hover { background: #6366f1; }
-#btn_red:pressed { background: #3730a3; }
-
-#btn_green {
-    background: #059669;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 12px;
-    padding: 9px 20px;
-}
-#btn_green:hover { background: #10b981; }
-
-#btn_ghost {
-    background: transparent;
-    color: #64748b;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    font-size: 12px;
-    padding: 8px 14px;
-}
-#btn_ghost:hover {
-    background: #1e1e30;
-    color: #e2e8f0;
-    border-color: #4f46e5;
-}
-
-#btn_icon {
-    background: transparent;
-    color: #64748b;
-    border: 1px solid #252540;
-    border-radius: 5px;
-    padding: 3px 7px;
-    font-size: 13px;
-}
-#btn_icon:hover {
-    background: #1e1e30;
-    color: #a5b4fc;
-    border-color: #4f46e5;
-}
-
-/* ── TABLES ── */
-QTableView, QTableWidget {
-    background: #0b0b14;
-    gridline-color: #1a1a2e;
-    border: none;
-    border-radius: 0;
-    alternate-background-color: #0f0f1a;
-    selection-background-color: #1e1e3f;
-    selection-color: #a5b4fc;
-    font-size: 12px;
-}
-QTableView::item, QTableWidget::item {
-    padding: 6px 10px;
-    border-bottom: 1px solid #13131f;
-}
-QTableView::item:selected, QTableWidget::item:selected {
-    background: #1e1e3f;
-    color: #a5b4fc;
-    border-left: 3px solid #4f46e5;
-}
-QHeaderView::section {
-    background: #13131f;
-    color: #64748b;
-    border: none;
-    border-bottom: 1px solid #1e1e30;
-    border-right: 1px solid #1a1a2e;
-    padding: 8px 10px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-QHeaderView::section:hover {
-    background: #1e1e30;
-    color: #a5b4fc;
-}
-
-/* ── TABS ── */
-QTabWidget::pane { border: none; background: #0b0b14; }
-QTabBar::tab {
-    background: transparent;
-    color: #475569;
-    padding: 10px 20px;
-    border: none;
-    border-bottom: 2px solid transparent;
-    font-size: 12px;
-    font-weight: 600;
-}
-QTabBar::tab:selected {
-    color: #a5b4fc;
-    border-bottom: 2px solid #4f46e5;
-}
-QTabBar::tab:hover { color: #e2e8f0; }
-
-/* ── COMBOBOX ── */
-QComboBox {
-    background: #13131f;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    padding: 7px 12px;
-    color: #e2e8f0;
-    font-size: 12px;
-    min-width: 100px;
-}
-QComboBox:focus { border-color: #4f46e5; }
-QComboBox::drop-down {
-    border: none;
-    width: 24px;
-}
-QComboBox QAbstractItemView {
-    background: #16162a;
-    border: 1px solid #252540;
-    selection-background-color: #1e1e3f;
-    color: #e2e8f0;
-    padding: 4px;
-}
-
-/* ── SPINBOX ── */
-QSpinBox, QDoubleSpinBox {
-    background: #13131f;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: #e2e8f0;
-    font-size: 12px;
-}
-QSpinBox:focus, QDoubleSpinBox:focus { border-color: #4f46e5; }
-QSpinBox::up-button, QSpinBox::down-button,
-QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
-    background: #1e1e30;
-    border: none;
-    width: 18px;
-}
-
-/* ── CHECKBOXES ── */
-QCheckBox {
-    color: #94a3b8;
-    font-size: 12px;
-    spacing: 8px;
-}
-QCheckBox::indicator {
-    width: 16px; height: 16px;
-    background: #13131f;
-    border: 1px solid #252540;
-    border-radius: 4px;
-}
-QCheckBox::indicator:checked {
-    background: #4f46e5;
-    border-color: #4f46e5;
-}
-QCheckBox::indicator:hover { border-color: #4f46e5; }
-
-/* ── GROUPBOX ── */
-QGroupBox {
-    color: #64748b;
-    border: 1px solid #1e1e30;
-    border-radius: 8px;
-    margin-top: 10px;
-    padding-top: 12px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-QGroupBox::title {
-    subcontrol-origin: margin;
-    left: 10px;
-    padding: 0 6px;
-    color: #4f46e5;
-}
-
-/* ── STATUS BAR ── */
-QStatusBar {
-    background: #0a0a12;
-    border-top: 1px solid #1e1e30;
-    color: #475569;
-    font-size: 11px;
-}
-
-/* ── TOOLTIPS ── */
-QToolTip {
-    background: #16162a;
-    color: #e2e8f0;
-    border: 1px solid #252540;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 11px;
-}
-
-/* ── DIALOGS / MESSAGEBOXES ── */
-QMessageBox {
-    background: #13131f;
-    color: #e2e8f0;
-}
-QMessageBox QPushButton {
-    min-width: 80px;
-    padding: 8px 16px;
-}
-
-/* ── LISTWIDGET ── */
-QListWidget {
-    background: #0f0f1a;
-    border: 1px solid #1e1e30;
-    border-radius: 6px;
-    color: #94a3b8;
-    font-size: 12px;
-}
-QListWidget::item {
-    padding: 7px 12px;
-    border-bottom: 1px solid #13131f;
-}
-QListWidget::item:selected {
-    background: #1e1e3f;
-    color: #a5b4fc;
-}
-QListWidget::item:hover {
-    background: #16162a;
-}
-
-/* ── PROGRESS BAR ── */
-QProgressBar {
-    background: #13131f;
-    border: none;
-    border-radius: 4px;
-    height: 6px;
-    text-align: center;
-    color: transparent;
-}
-QProgressBar::chunk {
-    background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #4f46e5, stop:1 #7c3aed);
-    border-radius: 4px;
-}
-
-/* ── SPLITTER ── */
-QSplitter::handle {
-    background: #1e1e30;
-    width: 1px;
-    height: 1px;
-}
-
-/* ── FRAMES ── */
-QFrame[frameShape="4"], QFrame[frameShape="5"] {
-    background: #1e1e30;
-    border: none;
-    max-height: 1px;
-    max-width: 1px;
-}
+QStatusBar { background: #000; color: #595959; font-size: 11px; border-top: 1px solid #2a2a2a; }
+QMenu { background: #1a1a1a; color: #e5e5e5; border: 1px solid #2a2a2a; border-radius: 4px; padding: 4px; }
+QMenu::item { padding: 9px 16px; border-radius: 3px; }
+QMenu::item:selected { background: #e50914; color: #fff; }
+QMenu::separator { background: #2a2a2a; height: 1px; margin: 4px 0; }
+QListWidget { background: #1a1a1a; border: 1px solid #2a2a2a; color: #e5e5e5; border-radius: 4px; }
+QListWidget::item { padding: 10px 12px; border-bottom: 1px solid #2a2a2a; }
+QListWidget::item:selected { background: #e50914; color: #fff; }
+QCheckBox { color: #e5e5e5; font-size: 13px; spacing: 8px; }
+QCheckBox::indicator { width: 18px; height: 18px; border-radius: 3px; border: 2px solid #595959; background: #2a2a2a; }
+QCheckBox::indicator:checked { background: #e50914; border-color: #e50914; }
+QProgressBar { background: #2a2a2a; border-radius: 2px; border: none; color: transparent; max-height: 3px; }
+QProgressBar::chunk { background: #e50914; border-radius: 2px; }
+QSplitter::handle { background: #2a2a2a; width: 1px; }
 """
 
 CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".zeus_config.json")
@@ -2478,9 +2157,9 @@ class EmailEditor(QWidget):
         layout.addWidget(topbar)
 
         fields_widget = QWidget()
-        fields_widget.setStyleSheet("background: #0f0f1a; border-bottom: 1px solid #1e1e30;")
-        fl = QFormLayout(fields_widget); fl.setContentsMargins(20,12,20,12); fl.setSpacing(8)
-        lbl_style = "color: #475569; font-size: 10px; font-weight: 700; letter-spacing: 1px; min-width: 110px;"
+        fields_widget.setStyleSheet("background: #1a1a1a; border-bottom: 1px solid #2a2a2a;")
+        fl = QFormLayout(fields_widget); fl.setContentsMargins(16,12,16,12); fl.setSpacing(8)
+        lbl_style = "color: #a3a3a3; font-size: 10px; font-weight: 700; letter-spacing: 1px; min-width: 90px;"
         self.f_subject = QLineEdit(); self.f_from = QLineEdit()
         self.f_to = QLineEdit(); self.f_cc = QLineEdit()
         self.f_bcc = QLineEdit(); self.f_reply = QLineEdit()
@@ -2545,11 +2224,11 @@ class EmailEditor(QWidget):
         self.body_html_view = QTextBrowser()
         self.body_html_view.setOpenExternalLinks(True)
         self.body_html_view.setStyleSheet("background: #ffffff; border: none; color: #000; padding: 8px;")
+        self.body_html_view.setZoomFactor(0.75)
         self.body_html_view.document().setDefaultStyleSheet(
-            "body{font-size:11px;margin:0;padding:4px;max-width:100%;}"
+            "body{font-size:11px;margin:0;padding:4px;}"
             "img{max-width:100%;height:auto;}"
-            "table{max-width:100%;font-size:11px;}"
-            "p,div,span{font-size:11px;}"
+            "table{max-width:100%;}"
         )
 
         # Plain text view
@@ -2568,13 +2247,8 @@ class EmailEditor(QWidget):
         self.body_stack.addWidget(self.body_raw_view)    # index 2
         bcl.addWidget(self.body_stack)
 
-        info_scroll = QScrollArea(); info_scroll.setWidgetResizable(True)
-        info_scroll.setFixedWidth(300)
-        info_scroll.setStyleSheet("QScrollArea{background:#0d0d18;border:none;border-left:1px solid #1e1e30;}"
-                                   "QScrollBar:vertical{background:#0d0d18;width:6px;border-radius:3px;}"
-                                   "QScrollBar::handle:vertical{background:#2d2d4e;border-radius:3px;}")
-        info_panel = QWidget()
-        info_panel.setStyleSheet("background: #0d0d18;")
+        info_panel = QWidget(); info_panel.setFixedWidth(220)
+        info_panel.setStyleSheet("background: #0a0a0a; border-left: 1px solid #2a2a2a;")
         ipl = QVBoxLayout(info_panel); ipl.setContentsMargins(12,12,12,12); ipl.setSpacing(0)
 
         def info_row(title, value="—", copyable=False, password=False):
@@ -2663,10 +2337,9 @@ class EmailEditor(QWidget):
         ipl.addWidget(self.boleto_frame)
         ipl.addStretch()
 
-        info_scroll.setWidget(info_panel)
-        splitter.addWidget(body_container); splitter.addWidget(info_scroll)
-        splitter.setSizes([900, 300])
-        layout.addWidget(splitter, 1)
+        splitter.addWidget(body_container); splitter.addWidget(info_panel)
+        splitter.setSizes([800, 220])
+        layout.addWidget(splitter)
 
     def _set_body_mode(self, mode):
         """Switch between HTML visual, plain text, and raw HTML source."""
@@ -4150,7 +3823,7 @@ class ExtractorWidget(QWidget):
 class ZeusMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("⚡ BYPASS — Email Monitor")
+        self.setWindowTitle("⚡ ZEUS — Email Monitor")
         self.setMinimumSize(1280, 750)
         self.resize(1440, 860)
         self.cfg = load_config()
@@ -4175,12 +3848,12 @@ class ZeusMainWindow(QMainWindow):
         main_layout = QHBoxLayout(central); main_layout.setContentsMargins(0,0,0,0); main_layout.setSpacing(0)
 
         # Sidebar
-        sidebar = QWidget(); sidebar.setObjectName("sidebar"); sidebar.setFixedWidth(220)
+        sidebar = QWidget(); sidebar.setObjectName("sidebar"); sidebar.setFixedWidth(210)
         sl = QVBoxLayout(sidebar); sl.setContentsMargins(0,0,0,0); sl.setSpacing(0)
-        logo = QLabel("⚡ BYPASS")
-        logo.setStyleSheet("color: #a5b4fc; font-size: 22px; font-weight: 900; letter-spacing: 1px; padding: 28px 20px 2px;")
+        logo = QLabel("⚡ ZEUS")
+        logo.setStyleSheet("color: #e50914; font-size: 28px; font-weight: 900; letter-spacing: -1px; padding: 24px 20px 4px;")
         sub = QLabel("EMAIL MONITOR")
-        sub.setStyleSheet("color: #334155; font-size: 9px; font-weight: 700; letter-spacing: 4px; padding: 0 20px 24px;")
+        sub.setStyleSheet("color: #404040; font-size: 9px; font-weight: 700; letter-spacing: 3px; padding: 0 20px 20px;")
         sl.addWidget(logo); sl.addWidget(sub)
         sep = QFrame(); sep.setFrameShape(QFrame.HLine); sep.setStyleSheet("background: #2a2a2a; max-height: 1px; margin: 0 16px;")
         sl.addWidget(sep)
@@ -4202,7 +3875,7 @@ class ZeusMainWindow(QMainWindow):
         topbar = QWidget(); topbar.setObjectName("topbar"); topbar.setFixedHeight(52)
         tbl = QHBoxLayout(topbar); tbl.setContentsMargins(20,0,20,0); tbl.setSpacing(10)
         self.page_title = QLabel("CAIXA DE ENTRADA")
-        self.page_title.setStyleSheet("color: #e2e8f0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;")
+        self.page_title.setStyleSheet("color: #fff; font-size: 18px; font-weight: 900;")
         tbl.addWidget(self.page_title); tbl.addStretch()
         self.search_box = QLineEdit(); self.search_box.setObjectName("search_box")
         self.search_box.setPlaceholderText("🔍  Buscar emails..."); self.search_box.textChanged.connect(self._filter)
@@ -4263,16 +3936,7 @@ class ZeusMainWindow(QMainWindow):
         self.status_bar = QStatusBar(); self.setStatusBar(self.status_bar)
         self.progress = QProgressBar(); self.progress.setMaximumWidth(120); self.progress.setVisible(False)
         self.count_lbl = QLabel("0 emails"); self.count_lbl.setStyleSheet("color: #595959; font-size: 11px; padding-right: 8px;")
-        tg_lbl = QLabel("  Telegram: @ByPass20262027  ")
-        tg_lbl.setStyleSheet("color: #4f46e5; font-size: 10px; font-weight: 700; padding: 0 8px;")
-        self._clock_lbl = QLabel()
-        self._clock_lbl.setStyleSheet("color: #404040; font-size: 10px; font-family: Consolas; padding: 0 12px 0 0;")
-        self.status_bar.addPermanentWidget(self.progress)
-        self.status_bar.addPermanentWidget(self.count_lbl)
-        self.status_bar.addPermanentWidget(tg_lbl)
-        self.status_bar.addPermanentWidget(self._clock_lbl)
-        self._clock_timer = QTimer(); self._clock_timer.timeout.connect(self._update_clock)
-        self._clock_timer.start(1000); self._update_clock()
+        self.status_bar.addPermanentWidget(self.progress); self.status_bar.addPermanentWidget(self.count_lbl)
 
         self._switch_tab(0)
 
@@ -4371,31 +4035,23 @@ class ZeusMainWindow(QMainWindow):
 
         self.sent_table = QTableWidget()
         self.sent_table.setColumnCount(7)
-        self.sent_table.setHorizontalHeaderLabels(["","DE","PARA","DATA/HORA","ASSUNTO","VALOR","PASTA ORIGEM"])
+        self.sent_table.setHorizontalHeaderLabels(["✓","DE","PARA","DATA/HORA","ASSUNTO","VALOR","PASTA ORIGEM"])
         hh = self.sent_table.horizontalHeader()
-        hh.setStretchLastSection(False)
-        hh.setSectionResizeMode(0, QHeaderView.Fixed);       self.sent_table.setColumnWidth(0, 36)
-        hh.setSectionResizeMode(1, QHeaderView.Interactive); self.sent_table.setColumnWidth(1, 210)
-        hh.setSectionResizeMode(2, QHeaderView.Interactive); self.sent_table.setColumnWidth(2, 210)
-        hh.setSectionResizeMode(3, QHeaderView.Fixed);       self.sent_table.setColumnWidth(3, 140)
+        hh.setSectionResizeMode(QHeaderView.Fixed)
+        self.sent_table.setColumnWidth(0,28); self.sent_table.setColumnWidth(1,180)
+        self.sent_table.setColumnWidth(2,180); self.sent_table.setColumnWidth(3,130)
+        self.sent_table.setColumnWidth(5,90); self.sent_table.setColumnWidth(6,90)
         hh.setSectionResizeMode(4, QHeaderView.Stretch)
-        hh.setSectionResizeMode(5, QHeaderView.Fixed);       self.sent_table.setColumnWidth(5, 100)
-        hh.setSectionResizeMode(6, QHeaderView.Fixed);       self.sent_table.setColumnWidth(6, 140)
-        hh.setMinimumSectionSize(80)
-        self.sent_table.verticalHeader().setDefaultSectionSize(32)
         self.sent_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.sent_table.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.sent_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.sent_table.verticalHeader().setVisible(False)
         self.sent_table.setShowGrid(True); self.sent_table.setWordWrap(False)
         self.sent_table.setStyleSheet("""
-            QTableWidget { gridline-color: #1a1a2e; background: #0b0b14; }
-            QTableWidget::item { padding: 4px 10px; border-bottom: 1px solid #13131f; }
-            QTableWidget::item:selected { background: #1e1e3f; color: #a5b4fc; border-left: 3px solid #4f46e5; }
-            QTableWidget::item:alternate { background: #0f0f1a; }
-            QHeaderView::section { background: #13131f; color: #64748b; font-size: 11px; font-weight: 700; padding: 8px 10px; border: none; border-bottom: 1px solid #1e1e30; border-right: 1px solid #1a1a2e; }
+            QTableWidget{gridline-color:#222;background:#141414;}
+            QTableWidget::item{padding:0 8px;border-right:1px solid #222;}
+            QTableWidget::item:selected{background:#002a0a;color:#2ecc40;border-left:3px solid #2ecc40;}
         """)
-        self.sent_table.setAlternatingRowColors(True)
         pl.addWidget(self.sent_table)
         return page
 
@@ -4583,9 +4239,6 @@ class ZeusMainWindow(QMainWindow):
                 self.cfg["schedules"] = self.schedules
                 save_config(self.cfg)
                 self._refresh_scheduled()
-
-    def _update_clock(self):
-        self._clock_lbl.setText(datetime.now().strftime("  %d/%m/%Y  %H:%M:%S  "))
 
     def _switch_tab(self, idx):
         self.stack.setCurrentIndex(idx)
@@ -5234,80 +4887,85 @@ class ZeusLoginWindow(QWidget):
         self.auth = _load_auth()
         self.is_first = not self.auth.get("pwd")
         self.attempts = 0
-        self.setWindowTitle("BYPASS — Email Monitor")
+        self.setWindowTitle("ZEUS — Email Monitor")
         self.setFixedSize(460, 540)
         self.setStyleSheet("""
-            QWidget { background: #0b0b14; color: #e2e8f0; font-family: 'Segoe UI', Arial; }
+            QWidget { background:#0a0a0a; color:#e5e5e5; font-family:Arial; }
+            QLineEdit {
+                background:#1a1a1a; border:1px solid #2a2a2a;
+                border-radius:6px; padding:12px 16px;
+                font-size:15px; color:#e5e5e5;
+            }
+            QLineEdit:focus { border:1px solid #e50914; }
+            QPushButton#btn_login {
+                background:#e50914; color:#fff; border:none;
+                border-radius:6px; padding:14px; font-size:14px;
+                font-weight:700; letter-spacing:1px;
+            }
+            QPushButton#btn_login:hover { background:#ff1a24; }
+            QPushButton#btn_link {
+                background:transparent; color:#404040;
+                border:none; font-size:11px;
+                text-decoration:underline;
+            }
+            QPushButton#btn_link:hover { color:#e5e5e5; }
         """)
         self._build()
 
     def _build(self):
         vl = QVBoxLayout(self)
-        vl.setContentsMargins(60, 50, 60, 40)
+        vl.setContentsMargins(50,40,50,30)
         vl.setSpacing(0)
 
         # Logo
         ico = QLabel("⚡"); ico.setAlignment(Qt.AlignCenter)
-        ico.setStyleSheet("font-size:52px; margin-bottom:2px; color:#a5b4fc;")
+        ico.setStyleSheet("font-size:56px; margin-bottom:4px;")
         vl.addWidget(ico)
 
-        title = QLabel("BYPASS"); title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("color:#a5b4fc;font-size:30px;font-weight:900;letter-spacing:10px;margin-bottom:2px;")
+        title = QLabel("ZEUS"); title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("color:#e50914;font-size:32px;font-weight:900;letter-spacing:8px;")
         vl.addWidget(title)
 
         sub = QLabel("EMAIL MONITOR"); sub.setAlignment(Qt.AlignCenter)
-        sub.setStyleSheet("color:#1e1e3f;font-size:10px;letter-spacing:5px;margin-bottom:36px;font-weight:700;")
+        sub.setStyleSheet("color:#2a2a2a;font-size:10px;letter-spacing:4px;margin-bottom:32px;")
         vl.addWidget(sub)
 
-        lbl = QLabel("CRIE SUA SENHA" if self.is_first else "ACESSO SEGURO")
+        lbl = QLabel("CRIE SUA SENHA" if self.is_first else "DIGITE SUA SENHA")
         lbl.setAlignment(Qt.AlignCenter)
-        lbl.setStyleSheet("color:#4f46e5;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:20px;")
+        lbl.setStyleSheet("color:#404040;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:16px;")
         vl.addWidget(lbl)
 
         self.f_pwd = QLineEdit(); self.f_pwd.setEchoMode(QLineEdit.Password)
-        self.f_pwd.setPlaceholderText("Senha"); self.f_pwd.setFixedHeight(50)
-        self.f_pwd.setStyleSheet(
-            "QLineEdit{background:#13131f;border:1px solid #252540;border-radius:8px;"
-            "padding:10px 16px;font-size:14px;color:#e2e8f0;}"
-            "QLineEdit:focus{border-color:#4f46e5;background:#16162a;}")
+        self.f_pwd.setPlaceholderText("Senha"); self.f_pwd.setFixedHeight(48)
         self.f_pwd.returnPressed.connect(self._submit)
         vl.addWidget(self.f_pwd)
 
         vl.addSpacing(10)
 
         self.f_confirm = QLineEdit(); self.f_confirm.setEchoMode(QLineEdit.Password)
-        self.f_confirm.setPlaceholderText("Confirmar senha"); self.f_confirm.setFixedHeight(50)
-        self.f_confirm.setStyleSheet(
-            "QLineEdit{background:#13131f;border:1px solid #252540;border-radius:8px;"
-            "padding:10px 16px;font-size:14px;color:#e2e8f0;}"
-            "QLineEdit:focus{border-color:#4f46e5;background:#16162a;}")
+        self.f_confirm.setPlaceholderText("Confirmar senha"); self.f_confirm.setFixedHeight(48)
         self.f_confirm.returnPressed.connect(self._submit)
         self.f_confirm.setVisible(self.is_first)
         vl.addWidget(self.f_confirm)
 
-        vl.addSpacing(8)
+        vl.addSpacing(6)
 
+        # Show password toggle
         hl = QHBoxLayout()
         self.chk_show = QCheckBox("Mostrar senha")
-        self.chk_show.setStyleSheet("color:#475569;font-size:11px;")
+        self.chk_show.setStyleSheet("color:#404040;font-size:11px;")
         self.chk_show.stateChanged.connect(self._toggle)
         hl.addWidget(self.chk_show); hl.addStretch()
         vl.addLayout(hl)
 
-        vl.addSpacing(22)
+        vl.addSpacing(20)
 
         self.btn = QPushButton("CRIAR E ENTRAR" if self.is_first else "ENTRAR")
-        self.btn.setFixedHeight(52)
-        self.btn.setStyleSheet(
-            "QPushButton{background:#4f46e5;color:#fff;border:none;border-radius:8px;"
-            "font-size:14px;font-weight:700;letter-spacing:1px;}"
-            "QPushButton:hover{background:#6366f1;}"
-            "QPushButton:pressed{background:#3730a3;}"
-            "QPushButton:disabled{background:#1e1e3f;color:#334155;}")
+        self.btn.setObjectName("btn_login"); self.btn.setFixedHeight(50)
         self.btn.clicked.connect(self._submit)
         vl.addWidget(self.btn)
 
-        vl.addSpacing(14)
+        vl.addSpacing(12)
 
         self.lbl_status = QLabel(""); self.lbl_status.setAlignment(Qt.AlignCenter)
         self.lbl_status.setStyleSheet("font-size:12px;"); self.lbl_status.setWordWrap(True)
@@ -5317,14 +4975,12 @@ class ZeusLoginWindow(QWidget):
 
         if not self.is_first:
             btn_forgot = QPushButton("Esqueci a senha")
-            btn_forgot.setStyleSheet(
-                "QPushButton{background:transparent;color:#334155;border:none;font-size:11px;}"
-                "QPushButton:hover{color:#6366f1;}")
+            btn_forgot.setObjectName("btn_link")
             btn_forgot.clicked.connect(self._forgot)
             vl.addWidget(btn_forgot)
 
-        foot = QLabel("configurado por @ByPass20262027"); foot.setAlignment(Qt.AlignCenter)
-        foot.setStyleSheet("color:#1e1e3f;font-size:10px;margin-top:6px;")
+        foot = QLabel("ZEUS Email Monitor"); foot.setAlignment(Qt.AlignCenter)
+        foot.setStyleSheet("color:#1a1a1a;font-size:10px;")
         vl.addWidget(foot)
 
         QTimer.singleShot(100, self.f_pwd.setFocus)
@@ -5417,7 +5073,7 @@ class ZeusLoginWindow(QWidget):
     def _on_verify_result(self, ok, auth):
         self.btn.setEnabled(True); self.btn.setText("ENTRAR")
         if ok:
-            self.lbl_status.setStyleSheet("color:#10b981;font-size:12px;font-weight:700;")
+            self.lbl_status.setStyleSheet("color:#2ecc40;font-size:12px;")
             self.lbl_status.setText("Acesso liberado!")
             self.btn.setEnabled(False)
             if auth:
@@ -5426,7 +5082,7 @@ class ZeusLoginWindow(QWidget):
         else:
             self.attempts += 1
             left = max(0, 5 - self.attempts)
-            self.lbl_status.setStyleSheet("color:#ef4444;font-size:12px;font-weight:600;")
+            self.lbl_status.setStyleSheet("color:#e50914;font-size:12px;")
             self.lbl_status.setText(
                 f"Senha incorreta. {left} tentativa(s)." if left else "Bloqueado 30s.")
             self.f_pwd.setFocus(); self._shake()
